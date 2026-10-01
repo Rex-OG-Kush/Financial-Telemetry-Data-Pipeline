@@ -2,7 +2,6 @@ name: Financial Telemetry Ingestion Loop
 
 on:
   schedule:
-    # Triggers the automation workflow every single day at 17:00 UTC (Market Close)
     - cron: '0 17 * * *'
   push:
     branches: [ main ]
@@ -22,9 +21,15 @@ jobs:
         cache: 'pip'
 
     - name: Resolve Pipeline Dependencies
+# Added r-base installation step directly within runner initialization layouts
+# This ensures local python validation passes smoothly inside the GitHub virtual environment
       run: |
+        sudo apt-get update && sudo apt-get install -y r-base r-cran-jsonlite
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
     - name: Execute Live Ingestion and Verification Script
+      env:
+        # Injects your secure Azure secrets block straight into environmental runtime metrics
+        AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
       run: python pipeline.py
