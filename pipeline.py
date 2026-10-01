@@ -111,5 +111,8 @@ class TopTierDataPipeline:
             print(f"❌ [CLOUD CRITICAL ERROR] Streaming block rejected by cloud boundary: {e}")
 
 if __name__ == "__main__":
-    pipeline = TopTierDataPipeline(target_asset="bitcoin")
+    # Dynamically inject the target index via your runtime dashboard or environment
+    target_ticker = os.getenv("TARGET_ASSET_TICKER", "bitcoin")
+    
+    pipeline = TopTierDataPipeline(target_asset=target_ticker)
     pipeline.ingest_market_tick()
