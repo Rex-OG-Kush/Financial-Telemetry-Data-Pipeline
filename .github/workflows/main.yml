@@ -24,7 +24,7 @@ jobs:
     - name: Resolve Pipeline Dependencies
       run: |
         python -m pip install --upgrade pip
-        pip install requests
+        pip install -r requirements.txt
 
     - name: Execute Live Ingestion and Verification Script
       run: python pipeline.py
