@@ -1,0 +1,30 @@
+name: Financial Telemetry Ingestion Loop
+
+on:
+  schedule:
+    # Triggers the automation workflow every single day at 17:00 UTC (Market Close)
+    - cron: '0 17 * * *'
+  push:
+    branches: [ main ]
+
+jobs:
+  ingest-and-validate:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository Code Base
+      uses: actions/checkout@v4
+
+    - name: Initialize Enterprise Python Environment
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+        cache: 'pip'
+
+    - name: Resolve Pipeline Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install requests
+
+    - name: Execute Live Ingestion and Verification Script
+      run: python pipeline.py
